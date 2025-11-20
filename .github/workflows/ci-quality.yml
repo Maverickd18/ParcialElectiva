@@ -53,9 +53,7 @@ jobs:
 
       # 8. Validar umbrales mínimos de cobertura
       - name: Validar umbral de cobertura (80%)
-        run: |
-          npm run test:coverage -- --collectCoverageFrom='src/**/*.ts' \
-            --coverageThreshold='{"global":{"branches":80,"functions":80,"lines":80,"statements":80}}'
+        run: npm run coverage:check
         continue-on-error: false
 
       # 9. Artefactos - Reporte de cobertura
@@ -70,6 +68,4 @@ jobs:
       # 10. Resumen del resultado
       - name: Resumen del CI
         if: always()
-        run: |
-          echo "✅ Pipeline CI completado"
-          echo "📊 Artefactos disponibles en la sección 'Artifacts'"
+        run: echo "✅ Pipeline CI completado exitosamente"
