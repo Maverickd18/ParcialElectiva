@@ -47,16 +47,11 @@ jobs:
         continue-on-error: false
 
       # 7. Generar y validar cobertura
-      - name: Tests con cobertura
+      - name: Tests con cobertura (validación 80%)
         run: npm run test:coverage
         continue-on-error: false
 
-      # 8. Validar umbrales mínimos de cobertura
-      - name: Validar umbral de cobertura (80%)
-        run: npm run coverage:check
-        continue-on-error: false
-
-      # 9. Artefactos - Reporte de cobertura
+      # 8. Artefactos - Reporte de cobertura
       - name: Subir reporte de cobertura
         if: always()
         uses: actions/upload-artifact@v4
@@ -65,7 +60,7 @@ jobs:
           path: coverage/
           retention-days: 30
 
-      # 10. Resumen del resultado
+      # 9. Resumen del resultado
       - name: Resumen del CI
         if: always()
         run: echo "✅ Pipeline CI completado exitosamente"
