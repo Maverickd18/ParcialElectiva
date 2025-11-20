@@ -1,0 +1,75 @@
+name: CI - Calidad de Software
+
+# Se activa en push y pull requests
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      # 1. Checkout del código
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      # 2. Configurar Node.js
+      - name: Configurar Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      # 3. Instalar dependencias
+      - name: Instalar dependencias
+        run: npm ci
+        
+      # 4. Ejecutar linter (ESLint)
+      - name: Linting con ESLint
+        run: npm run lint
+        continue-on-error: false
+
+      # 5. Compilar el proyecto (TypeScript)
+      - name: Compilar (TypeScript)
+        run: npm run build
+        continue-on-error: false
+
+      # 6. Ejecutar tests unitarios
+      - name: Tests unitarios
+        run: npm run test
+        continue-on-error: false
+
+      # 7. Generar y validar cobertura
+      - name: Tests con cobertura
+        run: npm run test:coverage
+        continue-on-error: false
+
+      # 8. Validar umbrales mínimos de cobertura
+      - name: Validar umbral de cobertura (80%)
+        run: |
+          npm run test:coverage -- --collectCoverageFrom='src/**/*.ts' \
+            --coverageThreshold='{"global":{"branches":80,"functions":80,"lines":80,"statements":80}}'
+        continue-on-error: false
+
+      # 9. Artefactos - Reporte de cobertura
+      - name: Subir reporte de cobertura
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 30
+
+      # 10. Resumen del resultado
+      - name: Resumen del CI
+        if: always()
+        run: |
+          echo "✅ Pipeline CI completado"
+          echo "📊 Artefactos disponibles en la sección 'Artifacts'"
