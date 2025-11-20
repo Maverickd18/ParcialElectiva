@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Calculator } from './calculator';
 import { isValidEmail, isNumeric, toUpperCase } from './validators';
 

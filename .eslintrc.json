@@ -22,7 +22,6 @@
         "argsIgnorePattern": "^_"
       }
     ],
-    "@typescript-eslint/explicit-function-return-types": "warn",
     "no-console": "warn",
     "no-debugger": "error",
     "semi": [
